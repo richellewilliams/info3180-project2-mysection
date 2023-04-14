@@ -5,10 +5,12 @@ Werkzeug Documentation:  https://werkzeug.palletsprojects.com/
 This file creates your application.
 """
 
-from app import app
+from app import app, db
 from flask import render_template, request, jsonify, send_file
 import os
-
+from app.models import Users, Posts, Follows
+from app.forms import RegisterForm, NewPostForm
+from werkzeug.utils import secure_filename
 
 ###
 # Routing for your application.
@@ -19,6 +21,41 @@ def index():
     return jsonify(message="This is the beginning of our API")
 
 
+@app.route("/api/v1/register", methods=['POST'])
+def movies():
+    form = RegisterForm()
+
+    if form.validate_on_submit():
+        username = form.username.data
+        firstname = form.firstname.data
+        lastname = form.lastname.data
+        email = form.email.data
+        location = form.location.data
+        biography = form.biography.data
+        profile_photo = form.profile_photo.data
+
+        filename = secure_filename(poster.filename)
+        profile_photo.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+        joined_on = datetime.datetime.now()
+
+        newUser = db.session.execute(db.select(Users)).scalars()
+        users_data = []
+        for user in users:
+            users_data.append({
+                "message": "User Successfully added",
+                "username": user.username,
+                "firstname": user.firstname,
+                "lastname": user.lastname,
+                "email": user.email,
+                "location":user.location,
+                "biography": user.biography,
+                "profile_photo": user.profile_photo
+            })
+
+        return jsonify(data=users_data)
+
+    
 ###
 # The functions below should be applicable to all Flask apps.
 ###
