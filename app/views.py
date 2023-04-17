@@ -9,7 +9,7 @@ from app import app, db
 from flask import render_template, request, jsonify, send_file
 import os
 from app.models import Users, Posts, Follows
-from app.forms import RegisterForm, NewPostForm
+from app.forms import RegisterUserForm, NewPostForm
 from werkzeug.utils import secure_filename
 
 ###
@@ -21,9 +21,9 @@ def index():
     return jsonify(message="This is the beginning of our API")
 
 
-@app.route("/api/v1/register", methods=['POST'])
-def movies():
-    form = RegisterForm()
+@app.route('/api/v1/register', methods=['POST'])
+def register():
+    form = RegisterUserForm()
 
     if form.validate_on_submit():
         username = form.username.data
@@ -50,6 +50,7 @@ def movies():
             users_data.append({
                 "message": "User Successfully added",
                 "username": user.username,
+                "password": "Password was saved!",
                 "firstname": user.firstname,
                 "lastname": user.lastname,
                 "email": user.email,
@@ -59,8 +60,15 @@ def movies():
             })
 
         return jsonify(data=users_data)
+    else:
+        return form_errors(form)
 
-    
+
+@app.route('/api/v1/users/<int:id>/posts', methods=['GET'])
+def posts(id):
+    post = db.session.execute(db.select(Post).filter_by(id=id)).scalar()
+    return jsonify(data=post.serialize())
+
 ###
 # The functions below should be applicable to all Flask apps.
 ###
@@ -68,17 +76,14 @@ def movies():
 # Here we define a function to collect form errors from Flask-WTF
 # which we can later use
 def form_errors(form):
-    error_messages = []
-    """Collects form errors"""
-    for field, errors in form.errors.items():
-        for error in errors:
-            message = u"Error in the %s field - %s" % (
-                    getattr(form, field).label.text,
-                    error
-                )
-            error_messages.append(message)
+    errors = []
+    for field, error in form.errors.items():
+        errors.append({
+            "field": field,
+            "message": error[0]
+        })
 
-    return error_messages
+    return jsonify(errors=errors)
 
 @app.route('/<file_name>.txt')
 def send_text_file(file_name):
