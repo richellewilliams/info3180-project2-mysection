@@ -27,6 +27,7 @@ def movies():
 
     if form.validate_on_submit():
         username = form.username.data
+        password = form.password.data
         firstname = form.firstname.data
         lastname = form.lastname.data
         email = form.email.data
@@ -38,6 +39,10 @@ def movies():
         profile_photo.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
         joined_on = datetime.datetime.now()
+
+        user = Users(username, password, firstname, lastname, email, location, biography,  profile_photo, joined_on)
+        db.session.add(user)
+        db.session.commit()
 
         newUser = db.session.execute(db.select(Users)).scalars()
         users_data = []

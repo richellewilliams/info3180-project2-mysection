@@ -6,6 +6,7 @@ from flask_wtf.file import FileField, FileRequired, FileAllowed
 
 class RegisterForm(FlaskForm):
     username = StringField('Username', validators=[InputRequired()])
+    password = PasswordField('Password', validators=[InputRequired()])
     firstname = StringField('Firstname', validators=[InputRequired()])
     lastname = StringField('Lastname', validators=[InputRequired()])
     firstname = StringField('Firstname', validators=[InputRequired()])
