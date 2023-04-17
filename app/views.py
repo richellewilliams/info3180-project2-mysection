@@ -6,11 +6,14 @@ This file creates your application.
 """
 
 from app import app, db
-from flask import render_template, request, jsonify, send_file
+from flask import render_template, request, jsonify, send_file, url_for
 import os
 from app.models import Users, Posts, Follows
 from app.forms import RegisterUserForm, NewPostForm
 from werkzeug.utils import secure_filename
+from flask_wtf.csrf import generate_csrf
+import datetime
+
 
 ###
 # Routing for your application.
@@ -35,28 +38,29 @@ def register():
         biography = form.biography.data
         profile_photo = form.profile_photo.data
 
-        filename = secure_filename(poster.filename)
+        filename = secure_filename(profile_photo.filename)
         profile_photo.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
         joined_on = datetime.datetime.now()
 
-        user = Users(username, password, firstname, lastname, email, location, biography,  profile_photo, joined_on)
+        user = Users(username, password, firstname, lastname, email, location, biography,  filename, joined_on)
         db.session.add(user)
         db.session.commit()
 
-        newUser = db.session.execute(db.select(Users)).scalars()
+        users = db.session.execute(db.select(Users)).scalars()
         users_data = []
         for user in users:
             users_data.append({
-                "message": "User Successfully added",
-                "username": user.username,
-                "password": "Password was saved!",
+                "message": "User successfully registered",
                 "firstname": user.firstname,
                 "lastname": user.lastname,
+                "username": user.username,
+                "password": user.password,
                 "email": user.email,
                 "location":user.location,
                 "biography": user.biography,
-                "profile_photo": user.profile_photo
+                "profile_photo": user.profile_photo,
+                "joined_on": user.joined_on
             })
 
         return jsonify(data=users_data)
@@ -64,10 +68,25 @@ def register():
         return form_errors(form)
 
 
-@app.route('/api/v1/users/<int:id>/posts', methods=['GET'])
-def posts(id):
-    post = db.session.execute(db.select(Post).filter_by(id=id)).scalar()
-    return jsonify(data=post.serialize())
+@app.route('/api/v1/users/<int:user_id>/posts', methods=['GET'])
+def posts(user_id):
+    posts = db.session.execute(db.select(Post).filter_by(user_id=id)).scalar()
+    posts_data = []
+    for post in posts:
+        posts_data.append({
+            "id": post.id,
+            "user_id": post.user_id,
+            "photo": post.photo,
+            "description": post.description,
+            "created_on": post.created_on
+        })
+
+    return jsonify(data=posts_data)
+
+
+@app.route('/api/v1/csrf-token', methods=['GET'])
+def get_csrf():
+    return jsonify({'csrf_token': generate_csrf()})
 
 ###
 # The functions below should be applicable to all Flask apps.

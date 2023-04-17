@@ -1,7 +1,7 @@
 <template>
    <div class="about container">
         <h2 class="pb-4">Register</h2>
-        <form @submit.prevent="saveMovie" id="movieForm">
+        <form @submit.prevent="saveUser" id="userForm">
             <div class="form-group">
                 <div class="form-group pb-4">
                     <label for="username" class="form-label">Username</label>
@@ -30,7 +30,7 @@
 
                 <div class="form-group pb-4">
                     <label for="location" class="form-label">Location</label>
-                    <input type="text" name="emlocationail" class="form-control"/>
+                    <input type="text" name="location" class="form-control"/>
                 </div>
 
                 <div class="form-group pb-4">
@@ -39,8 +39,8 @@
                 </div>
 
                 <div class=" pb-4">
-                    <label for="poster" class="form-label">Photo</label>
-                    <input type="file" name="poster" class="btn btn-lg w-100"/> <!--change the word from choose to browse-->
+                    <label for="profile_photo" class="form-label">Photo</label>
+                    <input type="file" name="profile_photo" class="form-control"/> <!-- " btn btn-lg w-100" change the word from choose to browse-->
                 </div>
 
                 <button class="btn btn-primary" type="submit">Register</button>
@@ -66,7 +66,9 @@ onMounted(() => {
     getCsrfToken();
 });
 
-function saveMovie() {
+function saveUser() {
+    let userForm = document.getElementById('userForm');
+    let form_data = new FormData(userForm);
 
     fetch("/api/v1/register", {
         method: 'POST',
