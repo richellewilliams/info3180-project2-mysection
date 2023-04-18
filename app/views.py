@@ -12,12 +12,46 @@ from app.models import Users, Posts, Follows
 from app.forms import RegisterUserForm, NewPostForm
 from werkzeug.utils import secure_filename
 from flask_wtf.csrf import generate_csrf
-import datetime
+from datetime import datetime, timedelta
+import jwt
+from functools import wraps
 
 
 ###
 # Routing for your application.
 ###
+
+def requires_auth(f):
+  @wraps(f)
+  def decorated(*args, **kwargs):
+    auth = request.headers.get('Authorization', None) # or request.cookies.get('token', None)
+
+    if not auth:
+      return jsonify({'code': 'authorization_header_missing', 'description': 'Authorization header is expected'}), 401
+
+    parts = auth.split()
+
+    if parts[0].lower() != 'bearer':
+      return jsonify({'code': 'invalid_header', 'description': 'Authorization header must start with Bearer'}), 401
+    elif len(parts) == 1:
+      return jsonify({'code': 'invalid_header', 'description': 'Token not found'}), 401
+    elif len(parts) > 2:
+      return jsonify({'code': 'invalid_header', 'description': 'Authorization header must be Bearer + \s + token'}), 401
+
+    token = parts[1]
+    try:
+        payload = jwt.decode(token, app.config['SECRET_KEY'], algorithms=["HS256"])
+
+    except jwt.ExpiredSignatureError:
+        return jsonify({'code': 'token_expired', 'description': 'token is expired'}), 401
+    except jwt.DecodeError:
+        return jsonify({'code': 'token_invalid_signature', 'description': 'Token signature is invalid'}), 401
+
+    g.current_user = user = payload
+    return f(*args, **kwargs)
+
+  return decorated
+
 
 @app.route('/')
 def index():
@@ -69,6 +103,7 @@ def register():
 
 
 @app.route('/api/v1/users/<int:user_id>/posts', methods=['GET'])
+@requires_auth
 def posts(user_id):
     posts = db.session.execute(db.select(Post).filter_by(user_id=id)).scalar()
     posts_data = []
@@ -87,6 +122,20 @@ def posts(user_id):
 @app.route('/api/v1/csrf-token', methods=['GET'])
 def get_csrf():
     return jsonify({'csrf_token': generate_csrf()})
+
+
+@app.route('/api/v1/jwt-token', methods=['GET'])
+def get_jwt():
+    timestamp = datetime.now()
+    payload = {
+        "sub": 1,
+        "iat": timestamp,
+        "exp": timestamp + timedelta(minutes=30)
+    }
+
+    token = jwt.encode(payload, app.config['SECRET_KEY'], algorithm='HS256')
+
+    return jsonify(token=token)
 
 ###
 # The functions below should be applicable to all Flask apps.
