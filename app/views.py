@@ -12,7 +12,8 @@ from app.models import Users, Follows
 from app.forms import RegisterUserForm
 from werkzeug.utils import secure_filename
 from flask_wtf.csrf import generate_csrf
-from datetime import datetime, timedelta
+from datetime import timedelta
+import datetime
 import jwt
 from functools import wraps
 
