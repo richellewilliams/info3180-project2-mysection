@@ -8,8 +8,8 @@ This file creates your application.
 from app import app, db
 from flask import render_template, request, jsonify, send_file, url_for
 import os
-from app.models import Users, Posts
-from app.forms import RegisterUserForm, NewPostForm
+from app.models import Users, Follows
+from app.forms import RegisterUserForm
 from werkzeug.utils import secure_filename
 from flask_wtf.csrf import generate_csrf
 from datetime import datetime, timedelta
