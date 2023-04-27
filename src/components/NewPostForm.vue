@@ -1,29 +1,25 @@
 <template>
-    <div class="body">
-        <div class="about container">
-            <h5>New Post</h5>
+<div class="about container pt-5 w-25">
+    <h5 class="pb-4">New Post</h5>
 
-            <div class="form-container">
-                <form @submit.prevent="savePost" id="postForm">
-                    <div class="form-group">
-                        <div class=" pb-4">
-                            <label for="photo" class="form-label">Photo</label>
-                            <input type="file" name="photo" id="photo"/>
-                        </div>
-
-                        <div class="form-group pb-4">
-                            <label for="caption" class="form-label">Caption</label>
-                            <textarea type="text" name="caption" class="form-control" placeholder="Write a caption..."></textarea>
-                        </div>
-        
-                        <button class="btn" type="submit">Submit</button>
-                    </div>
-                </form>
+    <div class="form-container">
+    <form @submit.prevent="savePost" id="postForm">
+        <div class="form-group">
+            <div class="pb-4">
+                <label for="photo" class="form-label">Photo</label>
+                <input type="file" name="photo" id="photo"/>
             </div>
-            
+
+            <div class="form-group pb-4">
+                <label for="caption" class="form-label">Caption</label>
+                <textarea type="text" name="caption" class="form-control" placeholder="Write a caption..."></textarea>
+            </div>
+        
+            <button class="btn" type="submit">Submit</button>
         </div>
+    </form>
     </div>
-    
+</div>
 </template>
  
 <script setup>
@@ -67,10 +63,10 @@ function savePost() {
 </script>
 
 <style>
-.body {
-    padding: 80px 500px 0px 500px;
+#c {
+    padding-top: 10000000px;
 }
-    
+
 .form-container {
     border-color: #d8d5cd;
     border-style: solid;
@@ -86,7 +82,7 @@ textarea {
 .btn {
     background-color: #7ed321;
     color: white;
-    padding: 5px 136px;
+    padding: 5px 100px;
 }
 
 .btn:hover {
@@ -102,6 +98,7 @@ content: 'Browse';
 #photo {
     cursor: pointer;
     padding-right: 0px;
+    display: block;
 }
 
 #photo::-webkit-file-upload-button { 
@@ -118,7 +115,7 @@ content: 'Browse';
     border-radius: 5px;
     font-size: 15px;
     outline: none;
-    padding: 2px 20px;
+    padding: 4px 20px;
     -webkit-user-select: none;
     user-select: none;
     white-space: nowrap;
