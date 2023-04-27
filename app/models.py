@@ -87,7 +87,7 @@ class Posts(db.Model):
             return str(self.id)  # python 3 support
 
     def __repr__(self):
-        return '<Posts %r>' % (self.username)
+        return '<Posts %r>' % (self.user_id)
 
 class Follows(db.Model):
     # You can use this to change the table name. The default convention is to use
@@ -122,4 +122,4 @@ class Follows(db.Model):
             return str(self.id)  # python 3 support
 
     def __repr__(self):
-        return '<Follows %r>' % (self.username)
+        return '<Follows %r>' % (self.follower_id)

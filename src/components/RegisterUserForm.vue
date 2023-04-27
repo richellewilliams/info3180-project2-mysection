@@ -97,7 +97,6 @@ function saveUser() {
     border-color: #d8d5cd;
     border-style: solid;
     border-radius: 5px;
-    /* padding: 45px 40px 25px 40px; */
 }
 
 textarea { 

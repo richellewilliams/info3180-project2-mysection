@@ -14,8 +14,3 @@ class RegisterUserForm(FlaskForm):
     location = StringField('Location', validators=[InputRequired()])
     biography = TextAreaField('Biography', validators=[InputRequired()])
     profile_photo = FileField('Photo', validators=[FileRequired(), FileAllowed(['jpg', 'png'], 'Only Images Allowed!')])
-
-class NewPostForm(FlaskForm):
-    photo = FileField('Photo', validators=[FileRequired(), FileAllowed(['jpg', 'png'], 'Only Images Allowed!')])
-    capton = TextAreaField('Caption', validators=[InputRequired()])
-    

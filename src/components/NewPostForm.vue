@@ -63,10 +63,6 @@ function savePost() {
 </script>
 
 <style>
-#c {
-    padding-top: 10000000px;
-}
-
 .form-container {
     border-color: #d8d5cd;
     border-style: solid;
@@ -91,8 +87,8 @@ textarea {
 }
 
 label #photo input[type="file"] {
-position: absolute;
-content: 'Browse';
+    position: absolute;
+    content: 'Browse';
 }
   
 #photo {
